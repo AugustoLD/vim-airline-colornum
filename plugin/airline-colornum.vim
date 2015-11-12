@@ -76,7 +76,7 @@ function! s:GetAirlineModeColors()
 endfunction
 
 " Get the current LineNr background colors
-" The ariline background is not the same as the LineNr background
+" The airline foreground is not the same as the LineNr background
 function! s:GetLineNrBgColor()
     redir => linenr_colors
         silent highlight LineNr
@@ -89,11 +89,11 @@ function! s:GetLineNrBgColor()
             let linenr_bg_colors = add(linenr_bg_colors, term[len('guibg='):])
         endif
     endfor
-    " Guarantee the correct order: ['ctermbg', 'guibg']
+    " Guarantee the correct order: ['guibg', 'ctermbg']
     if linenr_bg_colors[0] =~ '#'
-        return reverse(linenr_bg_colors)
-    else
         return linenr_bg_colors
+    else
+        return reverse(linenr_bg_colors)
     endif
 endfunction
 
@@ -103,17 +103,21 @@ function! s:SetCursorLineNrColor()
     let l:mode_colors = <SID>GetAirlineModeColors()
     if !empty(l:mode_colors)
         let l:mode_colors_exec = []
-    let l:linenr_bg_colors = []
-    if g:airline_colornum_reversed == 0
-        let l:resolve_index = [ 'guifg', 'guibg', 'ctermfg', 'ctermbg' ]
-    elseif g:airline_colornum_reversed == 1
-        let l:resolve_index = [ 'guibg', 'guifg', 'ctermbg', 'ctermfg' ]
-        let l:mode_colors_exec = add(l:mode_colors_exec, 'cterm=bold')
-        let l:linenr_bg_colors = <SID>GetLineNrBgColor()
-    else
-        echom "Error setting resolve_index! - airline_colornum_reversed option undefined!"
-        return l:fallback
-    endif
+        let l:linenr_bg_colors = []
+        if g:airline_colornum_reversed == 0
+            let l:resolve_index = [ 'guifg', 'guibg', 'ctermfg', 'ctermbg' ]
+        elseif g:airline_colornum_reversed == 1
+            let l:resolve_index = [ 'guibg', 'guifg', 'ctermbg', 'ctermfg' ]
+            let l:linenr_bg_colors = <SID>GetLineNrBgColor()
+            " Alter the background colors to be set
+            let l:mode_colors[0] = l:linenr_bg_colors[0]
+            let l:mode_colors[2] = l:linenr_bg_colors[1]
+            let l:mode_colors_exec = add(l:mode_colors_exec, 'cterm=bold')
+        else
+            echom "Error setting resolve_index! - Unknown airline_colornum_reversed option: ".
+                    \ g:airline_colornum_reversed
+            return
+        endif
         for l:i in range(0, 3, 1)
             if !empty(l:mode_colors[l:i])
                 let l:mode_colors_exec = add(l:mode_colors_exec,
@@ -121,11 +125,6 @@ function! s:SetCursorLineNrColor()
                     \ l:mode_colors[l:i])
             endif
         endfor
-    if g:airline_colornum_reversed == 1
-        " Override the background set inside the for with the LineNr background
-        let l:mode_colors_exec = add(l:mode_colors_exec, 'ctermbg=' . l:linenr_bg_colors[0])
-        let l:mode_colors_exec = add(l:mode_colors_exec, 'guibg=' . l:linenr_bg_colors[1])
-    endif
         exec printf('highlight %s %s',
                 \ 'CursorLineNr',
                 \ join(l:mode_colors_exec, ' '))
