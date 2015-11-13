@@ -46,6 +46,9 @@ function! s:GetAirlineMode()
         else
             let s:airline_mode = 'normal'
         endif
+        if &modified
+            let s:airline_mode = s:airline_mode . '_modified'
+        endif
     endif
 endfunction
 
@@ -133,11 +136,12 @@ endfunction
 
 " Determines when a redraw of the line number should occur:
 "   ColorLineNr seems to only redraw on cursor moved events for visual mode?
+"   Force a redraw when last mode is a file modified mode
 "   Force a redraw when toggling Airline back on
 "   Force a redraw when changing Airline theme
 function! s:ShouldRedrawCursorLineNr()
     if s:airline_mode == 'visual' ||
-       \ s:last_airline_mode == 'visual' ||
+       \ s:last_airline_mode =~ '_modified' ||
        \ s:last_airline_mode == 'toggledoff' ||
        \ g:airline_theme != s:last_airline_theme ||
        \ s:last_colorscheme != g:colors_name
