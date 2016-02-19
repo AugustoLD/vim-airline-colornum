@@ -32,7 +32,7 @@ This plugin is enabled by default.
    ```
    let g:airline_colornum_enabled = 0
    ```
-   
+
 *  To disable this plugin temporarily:
    ```
    :DisableAirlineColorNum
@@ -42,7 +42,7 @@ This plugin is enabled by default.
    ```
    :EnableAirlineColorNum
    ```
-   
+
 ##Troubleshooting
 If you are not seeing the highlight in certain modes, make sure your cursorline
 is enabled by adding this to your `.vimrc`:
