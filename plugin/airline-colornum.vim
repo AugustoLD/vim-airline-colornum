@@ -182,7 +182,11 @@ function! UpdateCursorLineNr()
 
                 " Cause the cursor line num to be redrawn to update color
                 if <SID>ShouldRedrawCursorLineNr()
-                    call feedkeys("\<up>\<down>", 'n')
+                    if mode() == "v" || mode() == "V" || mode() == "\<C-V>"
+                        call feedkeys("\<up>\<down>", 'n')
+                    else
+                        execute "normal! G\<C-O>"
+                    endif
                 endif
 
                 " Save last mode
