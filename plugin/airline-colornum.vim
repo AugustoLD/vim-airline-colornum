@@ -181,7 +181,7 @@ function! UpdateCursorLineNr()
                 call <SID>SetCursorLineNrColor()
 
                 " Cause the cursor line num to be redrawn to update color
-                if <SID>ShouldRedrawCursorLineNr()
+                if <SID>ShouldRedrawCursorLineNr() && &filetype != "java"
                     if col('.') == 1
                         call feedkeys("\<right>\<left>", 'n')
                     else
