@@ -10,6 +10,11 @@ if exists('g:loaded_airline_colornum_plugin')
 endif
 let g:loaded_airline_colornum_plugin = 1
 
+" Init 'colors_name' var if not set by vim
+if !exists('g:colors_name')
+    let g:colors_name = 'default'
+endif
+
 " Init 'enabled' var if not set by user
 if !exists('g:airline_colornum_enabled')
     let g:airline_colornum_enabled = 1
@@ -78,28 +83,6 @@ function! s:GetAirlineModeColors()
     endif
 endfunction
 
-" Get the current LineNr background colors
-" The airline foreground is not the same as the LineNr background
-function! s:GetLineNrBgColor()
-    redir => linenr_colors
-        silent highlight LineNr
-    redir END
-    let linenr_bg_colors = []
-    for term in split(linenr_colors)
-        if term =~ 'ctermbg='
-            let linenr_bg_colors = add(linenr_bg_colors, term[len('ctermbg='):])
-        elseif term =~ 'guibg='
-            let linenr_bg_colors = add(linenr_bg_colors, term[len('guibg='):])
-        endif
-    endfor
-    " Guarantee the correct order: ['guibg', 'ctermbg']
-    if linenr_bg_colors[0] =~ '#'
-        return linenr_bg_colors
-    else
-        return reverse(linenr_bg_colors)
-    endif
-endfunction
-
 " Set the color of the cursor line number
 function! s:SetCursorLineNrColor()
     " Update cursor line number color
@@ -107,15 +90,25 @@ function! s:SetCursorLineNrColor()
     if !empty(l:mode_colors)
         let l:mode_colors_exec = []
         let l:linenr_bg_colors = []
-        if g:airline_colornum_reversed == 0
-            let l:resolve_index = [ 'guifg', 'guibg', 'ctermfg', 'ctermbg' ]
-        elseif g:airline_colornum_reversed == 1
-            let l:resolve_index = [ 'guibg', 'guifg', 'ctermbg', 'ctermfg' ]
-            let l:linenr_bg_colors = <SID>GetLineNrBgColor()
+        let l:resolve_index = [ 'guifg', 'guibg', 'ctermfg', 'ctermbg' ]
+        if g:airline_colornum_reversed == 1
+            " Get the current LineNr background color
+            let l:linenr_bg_color = synIDattr(hlID("LineNr"), "bg")
             " Alter the background colors to be set
-            let l:mode_colors[0] = l:linenr_bg_colors[0]
-            let l:mode_colors[2] = l:linenr_bg_colors[1]
-            let l:mode_colors_exec = add(l:mode_colors_exec, 'cterm=bold')
+            if l:linenr_bg_color != ''
+                if l:linenr_bg_color =~ '#'
+                    " If it's running on a GUI instance
+                    let l:mode_colors[0] = l:linenr_bg_color
+                else
+                    " If it's running on a CLI instance
+                    let l:mode_colors[2] = l:linenr_bg_color
+                endif
+            else
+                let l:mode_colors[0] = 'NONE'
+                let l:mode_colors[2] = 'NONE'
+            endif
+            let l:mode_colors_exec = add(l:mode_colors_exec, 'cterm=bold,reverse')
+            let l:mode_colors_exec = add(l:mode_colors_exec, 'gui=bold,reverse')
         else
             echom "Error setting resolve_index! - Unknown airline_colornum_reversed option: ".
                     \ g:airline_colornum_reversed

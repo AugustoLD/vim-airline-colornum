@@ -43,6 +43,13 @@ This plugin is enabled by default.
    :EnableAirlineColorNum
    ```
 
+*  To enable the reversed mode in your `.vimrc`:
+   ```
+   let g:airline_colornum_reversed = 1
+   ```
+   Example:
+   ![Reversed Example](https://i.imgur.com/qum5ocr.png)
+
 ##Troubleshooting
 If you are not seeing the highlight in certain modes, make sure your cursorline
 is enabled by adding this to your `.vimrc`:
