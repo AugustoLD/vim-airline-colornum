@@ -181,7 +181,7 @@ function! UpdateCursorLineNr()
                 call <SID>SetCursorLineNrColor()
 
                 " Cause the cursor line num to be redrawn to update color
-                if <SID>ShouldRedrawCursorLineNr() && &filetype != "java"
+                if <SID>ShouldRedrawCursorLineNr()
                     if col('.') == 1
                         call feedkeys("\<right>\<left>", 'n')
                     else
@@ -198,6 +198,7 @@ function! UpdateCursorLineNr()
             endif
         endif
     endif
+    return ''
 endfunction
 
 " Ensure line number is update every time the status line is updated
@@ -271,6 +272,7 @@ function! s:EnableAirlineColorNum()
         au!
         " Ensure function has been loaded into the status line whenever entering a buffer
         autocmd BufWinEnter * call <SID>LoadCursorLineNrUpdates()
+        autocmd ColorScheme * call <SID>SetCursorLineNrColor()
     augroup END
     " Attempt to load immediately
     call <SID>LoadCursorLineNrUpdates()
