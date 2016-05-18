@@ -47,7 +47,7 @@ This plugin is enabled by default.
    ```
    let g:airline_colornum_reversed = 1
    ```
-   ![Reversed Example](https://i.imgur.com/qum5ocr.png)
+   ![Reversed Example](https://i.imgur.com/AER7ig2.png)
 
 ##Troubleshooting
 If you are not seeing the highlight in certain modes, make sure your cursorline
