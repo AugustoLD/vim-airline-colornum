@@ -47,7 +47,6 @@ This plugin is enabled by default.
    ```
    let g:airline_colornum_reversed = 1
    ```
-   Example:
    ![Reversed Example](https://i.imgur.com/qum5ocr.png)
 
 ##Troubleshooting
