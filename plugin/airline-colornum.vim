@@ -109,10 +109,6 @@ function! s:SetCursorLineNrColor()
             endif
             let l:mode_colors_exec = add(l:mode_colors_exec, 'cterm=bold,reverse')
             let l:mode_colors_exec = add(l:mode_colors_exec, 'gui=bold,reverse')
-        else
-            echom "Error setting resolve_index! - Unknown airline_colornum_reversed option: ".
-                    \ g:airline_colornum_reversed
-            return
         endif
         for l:i in range(0, 3, 1)
             if !empty(l:mode_colors[l:i])
