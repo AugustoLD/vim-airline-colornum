@@ -51,7 +51,7 @@ function! s:GetAirlineMode()
         else
             let s:airline_mode = 'normal'
         endif
-        if &modified
+        if &modified && has_key(g:airline#themes#{g:airline_theme}#palette, s:airline_mode . '_modified')
             let s:airline_mode = s:airline_mode . '_modified'
         endif
     endif
@@ -89,9 +89,10 @@ function! s:SetCursorLineNrColor()
     let l:mode_colors = <SID>GetAirlineModeColors()
     if !empty(l:mode_colors)
         let l:mode_colors_exec = []
-        let l:linenr_bg_colors = []
         let l:resolve_index = [ 'guifg', 'guibg', 'ctermfg', 'ctermbg' ]
         if g:airline_colornum_reversed == 1
+            " revert the fg and bg indexes
+            let l:resolve_index = [ 'guibg', 'guifg', 'ctermbg', 'ctermfg' ]
             " Get the current LineNr background color
             let l:linenr_bg_color = synIDattr(hlID("LineNr"), "bg")
             " Alter the background colors to be set
@@ -107,8 +108,8 @@ function! s:SetCursorLineNrColor()
                 let l:mode_colors[0] = 'NONE'
                 let l:mode_colors[2] = 'NONE'
             endif
-            let l:mode_colors_exec = add(l:mode_colors_exec, 'cterm=bold,reverse')
-            let l:mode_colors_exec = add(l:mode_colors_exec, 'gui=bold,reverse')
+            let l:mode_colors_exec = add(l:mode_colors_exec, 'cterm=bold')
+            let l:mode_colors_exec = add(l:mode_colors_exec, 'gui=bold')
         endif
         for l:i in range(0, 3, 1)
             if !empty(l:mode_colors[l:i])
@@ -130,7 +131,7 @@ endfunction
 "   Force a redraw when changing Airline theme
 function! s:ShouldRedrawCursorLineNr()
     if s:airline_mode == 'visual' ||
-       \ s:airline_mode == 'normal' ||
+       \ s:last_airline_mode == 'visual' ||
        \ s:last_airline_mode =~ '_modified' ||
        \ s:last_airline_mode == 'toggledoff' ||
        \ g:airline_theme != s:last_airline_theme ||
