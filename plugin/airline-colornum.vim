@@ -130,6 +130,7 @@ endfunction
 "   Force a redraw when changing Airline theme
 function! s:ShouldRedrawCursorLineNr()
     if s:airline_mode == 'visual' ||
+       \ s:airline_mode == 'normal' ||
        \ s:last_airline_mode =~ '_modified' ||
        \ s:last_airline_mode == 'toggledoff' ||
        \ g:airline_theme != s:last_airline_theme ||
