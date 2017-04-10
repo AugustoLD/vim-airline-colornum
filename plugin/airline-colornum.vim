@@ -173,10 +173,10 @@ function! UpdateCursorLineNr()
 
                 " Cause the cursor line num to be redrawn to update color
                 if <SID>ShouldRedrawCursorLineNr()
-                    if col('.') == 1
-                        call feedkeys("\<right>\<left>", 'n')
+                    if line('.') == 1
+                        call feedkeys("\<down>\<up>", 'n')
                     else
-                        call feedkeys("\<left>\<right>", 'n')
+                        call feedkeys("\<up>\<down>", 'n')
                     endif
                 endif
 
