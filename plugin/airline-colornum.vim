@@ -125,16 +125,10 @@ function! s:SetCursorLineNrColor()
 endfunction
 
 " Determines when a redraw of the line number should occur:
-"   ColorLineNr seems to only redraw on cursor moved events for visual mode?
-"   Force a redraw when last mode is a file modified mode
 "   Force a redraw when toggling Airline back on
 "   Force a redraw when changing Airline theme
 function! s:ShouldRedrawCursorLineNr()
-    if s:airline_mode == 'visual' ||
-       \ s:airline_mode == 'normal' ||
-       \ s:last_airline_mode =~ '_modified' ||
-       \ s:last_airline_mode == 'toggledoff' ||
-       \ g:airline_theme != s:last_airline_theme ||
+    if g:airline_theme != s:last_airline_theme ||
        \ s:last_colorscheme != g:colors_name
         return 1
     endif
@@ -173,10 +167,10 @@ function! UpdateCursorLineNr()
 
                 " Cause the cursor line num to be redrawn to update color
                 if <SID>ShouldRedrawCursorLineNr()
-                    if line('.') == 1
-                        call feedkeys("\<down>\<up>", 'n')
+                    if col('.') == 1
+                        call feedkeys("\<right>\<left>", 'n')
                     else
-                        call feedkeys("\<up>\<down>", 'n')
+                        call feedkeys("\<left>\<right>", 'n')
                     endif
                 endif
 
